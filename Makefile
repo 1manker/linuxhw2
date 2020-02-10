@@ -8,26 +8,29 @@
 #Makefile homework
 #####################
 
-CC=gcc -c
-CFLAGS=-ggdb -Wall
+CC=gcc
+CFLAGS=-ggdb -Wall -Werror
+OBJS=prompt.o compute.o display.o
 
-.PHONY: clean
+.PHONY: clean tidy
 
-approxe: prompt.o compute.o display.o approxe.c
-	$(CC) $(CFLAGS) approxe.c prompt.o compute.o display.o -o approxe
+approxe: $(OBJS) approxe.c
+	$(CC) $(CFLAGS) -I. $(OBJS) approxe.c -o approxe
 
-prompt.o: prompt.h prompt.c  
-	$(CC) $(CFLAGS) prompt.h prompt.c
+#Must have the -I. flag for the include in approxe.c due to angle brackets.
 
-compute.o: compute.h compute.c 
-	$(CC) $(CFLAGS) compute.h compute.c
+prompt.o: prompt.c prompt.h  
+	$(CC) $(CFLAGS) -c prompt.c prompt.h
+
+compute.o: compute.c compute.h 
+	$(CC) $(CFLAGS) -c compute.c compute.h
 
 
-display.o: display.h display.c
-	$(CC) $(CFLAGS) display.h display.c
+display.o: display.c display.h
+	$(CC) $(CFLAGS) -c display.c display.h
 
 
 tidy:
-	/bin/rm -f prompt.o compute.o display.o
+	/bin/rm -f $(OBJS)
 clean: tidy
-	/bin/rm -f approxe
+	/bin/rm -f $(OBJS) approxe
